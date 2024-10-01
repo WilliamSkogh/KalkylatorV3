@@ -1,54 +1,64 @@
 ﻿using System;
+using System.Collections.Generic;
+using static KalkylatorV2.Förbättringar;
 
 class Program
 {
     static void Main()
     {
+        Calculator calculator = new Calculator(); // Skapa en instans av Calculator-klassen
+
+        List<double> numbers = new List<double>(); // Lista för tal
+        List<char> operations = new List<char>();  // Lista för operationer
+
         Console.WriteLine("Välkommen till miniräknaren!");
+
+        // Hämta första talet
         Console.WriteLine("Ange det första talet:");
-        double num1 = Convert.ToDouble(Console.ReadLine());
+        double num = Convert.ToDouble(Console.ReadLine());
+        numbers.Add(num);
 
-        Console.WriteLine("Ange det andra talet:");
-        double num2 = Convert.ToDouble(Console.ReadLine());
-
-        Console.WriteLine("Välj en operation (+, -, *, /):");
-        char operation = Console.ReadKey().KeyChar;
-        Console.WriteLine(); // För att flytta till nästa rad
-
-        double result = 0;
-        bool validOperation = true;
-
-        switch (operation)
+        // Loop för att fortsätta mata in operationer och tal
+        while (true)
         {
-            case '+':
-                result = num1 + num2;
-                break;
-            case '-':
-                result = num1 - num2;
-                break;
-            case '*':
-                result = num1 * num2;
-                break;
-            case '/':
-                if (num2 != 0)
-                {
-                    result = num1 / num2;
-                }
-                else
-                {
-                    Console.WriteLine("Fel: Division med noll är inte tillåtet.");
-                    validOperation = false;
-                }
-                break;
-            default:
-                Console.WriteLine("Ogiltig operation. Försök igen.");
-                validOperation = false;
-                break;
+            // Be användaren välja en operation
+            Console.WriteLine("Välj en operation (+, -, *, /, %, ^) eller tryck = för att få resultatet:");
+            char operation = Console.ReadKey().KeyChar;
+            Console.WriteLine(); // Flytta till nästa rad
+
+            // Kontrollera om användaren tryckte på '=' för att avsluta inmatningen
+            if (operation == '=')
+            {
+                break; // Avsluta loopen om användaren trycker =
+            }
+
+            // Lägg till operationen i listan
+            operations.Add(operation);
+
+            // Hämta nästa tal och kontrollera att det är giltigt
+            Console.WriteLine("Ange nästa tal:");
+            string input = Console.ReadLine();
+
+            if (double.TryParse(input, out num))
+            {
+                numbers.Add(num);
+            }
+            else
+            {
+                Console.WriteLine("Fel: Ogiltig inmatning. Försök igen.");
+                continue; // Skippa resten av loopen om inmatningen är ogiltig
+            }
         }
 
-        if (validOperation)
+        try
         {
+            // Utför beräkningen på hela listan
+            double result = calculator.CalculateMultiple(numbers, operations);
             Console.WriteLine($"Resultatet är: {result}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
         }
 
         Console.WriteLine("Tryck på valfri tangent för att avsluta...");
